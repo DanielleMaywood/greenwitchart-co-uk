@@ -1,7 +1,6 @@
-export type AdminActionState = {
-  status: "idle" | "success" | "error";
-  message: string;
-};
+import type { AdminActionState } from "./_components/types";
+
+export type { AdminActionState };
 
 export const initialAdminActionState: AdminActionState = {
   status: "idle",
