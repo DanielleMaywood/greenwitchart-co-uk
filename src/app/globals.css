@@ -11,6 +11,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   background: var(--color-surface-primary);
   color: var(--color-content-primary);

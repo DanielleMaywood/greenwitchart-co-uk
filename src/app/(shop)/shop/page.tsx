@@ -1,10 +1,20 @@
 import { getDatabaseConnection } from "@/app/_lib/db";
 import Price from "../../_components/price";
 import { productsTable } from "@/db/schema";
+import Link from "next/link";
+import { and, eq, sql } from "drizzle-orm";
 
 export default async function ShopPage() {
   const db = await getDatabaseConnection();
-  const products = await db.select().from(productsTable);
+  const products = await db
+    .select()
+    .from(productsTable)
+    .where(
+      and(
+        eq(productsTable.active, true),
+        sql`${productsTable.stockCount} > ${productsTable.stockReserved}`,
+      ),
+    );
 
   return (
     <div>
@@ -20,13 +30,11 @@ function ProductListing({
 }: {
   product: typeof productsTable.$inferSelect;
 }) {
-  console.log({ product });
-
   return (
-    <div>
+    <Link href={`/shop/${product.id}`}>
       {/* <img src={product.images[0]} /> */}
       {product.name} /{" "}
       <Price currency={product.currency} amount={product.unitAmount} />
-    </div>
+    </Link>
   );
 }

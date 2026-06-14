@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { check, index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const productsTable = sqliteTable("products", {
   id: text().primaryKey(),
@@ -24,4 +24,23 @@ export const productsTable = sqliteTable("products", {
   check("stockReservedPositive", sql`${table.stockReserved} >= 0`),
   check("stockReservedLessThanStockCount", sql`${table.stockReserved} <= ${table.stockCount}`),
   check("currencyNormalised", sql`${table.currency} = lower(${table.currency})`),
+]);
+
+export const stockAdjustmentsTable = sqliteTable("stock_adjustments", {
+  id: text().primaryKey(),
+  productId: text()
+    .notNull()
+    .references(() => productsTable.id, { onDelete: "cascade" }),
+
+  delta: integer().notNull(),
+  previousStockCount: integer().notNull(),
+  newStockCount: integer().notNull(),
+  note: text(),
+
+  createdAt: integer({ mode: "timestamp_ms" }).notNull(),
+}, (table) => [
+  index("stockAdjustmentsProductIdIdx").on(table.productId),
+  check("stockAdjustmentDeltaNotZero", sql`${table.delta} <> 0`),
+  check("stockAdjustmentPreviousStockPositive", sql`${table.previousStockCount} >= 0`),
+  check("stockAdjustmentNewStockPositive", sql`${table.newStockCount} >= 0`),
 ]);

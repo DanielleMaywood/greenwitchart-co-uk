@@ -8,6 +8,13 @@
       "when": 1781470442623,
       "tag": "0000_wealthy_johnny_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1781472113025,
+      "tag": "0001_violet_red_ghost",
+      "breakpoints": true
     }
   ]
 }

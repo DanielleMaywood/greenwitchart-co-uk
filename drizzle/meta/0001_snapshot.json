@@ -1,0 +1,237 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "9b4af4d1-dfa4-4663-9076-edc7cf80ba25",
+  "prevId": "ec7da1f7-90f4-4b48-824f-c8d799d9bf95",
+  "tables": {
+    "products": {
+      "name": "products",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stripeProductId": {
+          "name": "stripeProductId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stripePriceId": {
+          "name": "stripePriceId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unitAmount": {
+          "name": "unitAmount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "active": {
+          "name": "active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "stockCount": {
+          "name": "stockCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "stockReserved": {
+          "name": "stockReserved",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "products_stripeProductId_unique": {
+          "name": "products_stripeProductId_unique",
+          "columns": [
+            "stripeProductId"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "unitAmountPositive": {
+          "name": "unitAmountPositive",
+          "value": "\"products\".\"unitAmount\" >= 0"
+        },
+        "stockCountPositive": {
+          "name": "stockCountPositive",
+          "value": "\"products\".\"stockCount\" >= 0"
+        },
+        "stockReservedPositive": {
+          "name": "stockReservedPositive",
+          "value": "\"products\".\"stockReserved\" >= 0"
+        },
+        "stockReservedLessThanStockCount": {
+          "name": "stockReservedLessThanStockCount",
+          "value": "\"products\".\"stockReserved\" <= \"products\".\"stockCount\""
+        },
+        "currencyNormalised": {
+          "name": "currencyNormalised",
+          "value": "\"products\".\"currency\" = lower(\"products\".\"currency\")"
+        }
+      }
+    },
+    "stock_adjustments": {
+      "name": "stock_adjustments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "productId": {
+          "name": "productId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "delta": {
+          "name": "delta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "previousStockCount": {
+          "name": "previousStockCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "newStockCount": {
+          "name": "newStockCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "stockAdjustmentsProductIdIdx": {
+          "name": "stockAdjustmentsProductIdIdx",
+          "columns": [
+            "productId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "stock_adjustments_productId_products_id_fk": {
+          "name": "stock_adjustments_productId_products_id_fk",
+          "tableFrom": "stock_adjustments",
+          "tableTo": "products",
+          "columnsFrom": [
+            "productId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "stockAdjustmentDeltaNotZero": {
+          "name": "stockAdjustmentDeltaNotZero",
+          "value": "\"stock_adjustments\".\"delta\" <> 0"
+        },
+        "stockAdjustmentPreviousStockPositive": {
+          "name": "stockAdjustmentPreviousStockPositive",
+          "value": "\"stock_adjustments\".\"previousStockCount\" >= 0"
+        },
+        "stockAdjustmentNewStockPositive": {
+          "name": "stockAdjustmentNewStockPositive",
+          "value": "\"stock_adjustments\".\"newStockCount\" >= 0"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
