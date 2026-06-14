@@ -35,7 +35,14 @@
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "prod_db_greenwitchart",
+			"database_name": "prod-db-greenwitchart",
+			"database_id": "a91fbfdd-f7f3-4a54-be26-f4fe27705d0c"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
