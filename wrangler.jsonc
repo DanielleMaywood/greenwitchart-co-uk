@@ -38,9 +38,10 @@
 	"upload_source_maps": true,
 	"d1_databases": [
 		{
-			"binding": "prod_db_greenwitchart",
+			"binding": "DB",
 			"database_name": "prod-db-greenwitchart",
-			"database_id": "a91fbfdd-f7f3-4a54-be26-f4fe27705d0c"
+			"database_id": "a91fbfdd-f7f3-4a54-be26-f4fe27705d0c",
+			"migrations_dir": "drizzle/"
 		}
 	]
 	/**
