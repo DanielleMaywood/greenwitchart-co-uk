@@ -6,13 +6,10 @@ import { ActionMessage } from "./_components/action-message";
 import { PendingSubmitButton } from "./_components/button";
 import { TextInput } from "./_components/form-fields";
 import { ProductPanel } from "./_components/product-panel";
-import {
-  getInventorySummary,
-  SummaryStats,
-} from "./_components/summary-stats";
+import { getInventorySummary, SummaryStats } from "./_components/summary-stats";
 import type { AdminProduct } from "./_components/types";
 import { RefreshCw, Search } from "lucide-react";
-import { useMemo, useState, useActionState } from "react";
+import { useActionState, useState } from "react";
 
 type AdminProductsProps = {
   initialQuery: string;
@@ -59,23 +56,20 @@ export default function AdminProducts({
   const [statusFilter, setStatusFilter] =
     useState<StatusFilter>(initialStatusFilter);
 
-  const summary = useMemo(() => getInventorySummary(products), [products]);
-  const filteredProducts = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+  const summary = getInventorySummary(products);
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredProducts = products.filter((product) => {
+    const matchesQuery =
+      normalizedQuery.length === 0 ||
+      product.name.toLowerCase().includes(normalizedQuery) ||
+      product.stripeProductId.toLowerCase().includes(normalizedQuery);
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && product.active) ||
+      (statusFilter === "inactive" && !product.active);
 
-    return products.filter((product) => {
-      const matchesQuery =
-        normalizedQuery.length === 0 ||
-        product.name.toLowerCase().includes(normalizedQuery) ||
-        product.stripeProductId.toLowerCase().includes(normalizedQuery);
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" && product.active) ||
-        (statusFilter === "inactive" && !product.active);
-
-      return matchesQuery && matchesStatus;
-    });
-  }, [products, query, statusFilter]);
+    return matchesQuery && matchesStatus;
+  });
 
   function handleQueryChange(value: string) {
     setQuery(value);
